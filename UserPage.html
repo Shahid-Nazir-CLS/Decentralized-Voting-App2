@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Votem</title>
+		<link rel="stylesheet" href="styles.css">
+		<meta charset="utf-8"/>
+		<script src="./node_modules/web3/dist/web3.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+	</head>
+<body>
+
+	<div id="topBtns">
+		<a href="admin.html">
+  			<button id ="admin" type="button">ADMIN</button>
+  			 
+		</a> 
+		
+		<a href="index.html">
+			<button id="home" type="button">Home</button>
+		</a> 
+		
+		<a href="UserPage.html">
+		<button id="election" type="button">Election</button>
+		</a> 
+
+		<a href="about.html">
+		<button id ="about" type="button">About us</button>
+		</a> 
+
+		<a href="contact.html">
+		<button id ="contact" type="button">Contact Us</button> 
+		</a>  
+		
+		<span id="timer">
+			<span id="test">Election</span> started at: <span id="startat"></span> <!-- &ensp;&ensp;&ensp;&ensp; --> <span style="display:inline-block; width: 50px;"></span>Time Remaining:     <span id="time"></span>
+		</span>
+	</div>
+
+
+	<div id="appName">
+  		<h1>Votem</h1>
+	</div> 
+
+	
+
+	<div id="adminsPage"><span id="electName"></span> Election Results</div><br>
+
+		<table id="voterTable">
+	  <tr>
+	  	<th>Sr.no</th>
+	    <th>Candidate Name</th>
+	    <th>Symbol</th>
+	    <th>Votes</th>
+	  </tr>
+	</table>
+	
+	<select id="candidateSelector">  		
+	</select> 
+
+
+	<div id="UserpageBtns"> 
+
+		<button class="bottomBtnsUser"type="button" id="votebtn">Vote</button>   
+		<button class="bottomBtnsUser"type="button" id="abstainbtn">Abstain</button>
+	</div>
+
+
+	<script>
+		var candcount = 1;
+		// If web3 is not undefined, then we'll use that as our provider. 
+// If it's undefined (else), we can manually specify the provider ourselves. 
+       if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+
+        // We have to specify a default ethereum account to use 
+        // through the web3.eth.defaultAccount method:
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+
+        //  Set up the contract ABI so the app knows what functions are available for this contract.
+        // This ABI allows you to call functions and receive data from your smart contract.
+        var VotesContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_candidateName",
+				"type": "string"
+			}
+		],
+		"name": "removeCandidate",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getCandCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_candidateName",
+				"type": "string"
+			},
+			{
+				"name": "_symbol",
+				"type": "string"
+			}
+		],
+		"name": "addCandidate",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			}
+		],
+		"name": "getCandidate",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "abstain",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "resetCandidates",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getOwner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getElectionTime",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getElectionParameters",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_electionStartTime",
+				"type": "string"
+			}
+		],
+		"name": "setElectionStartTime",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_electionName",
+				"type": "string"
+			},
+			{
+				"name": "_duration",
+				"type": "string"
+			}
+		],
+		"name": "setElectionParameters",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_cand",
+				"type": "string"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [],
+		"name": "VoteEvent",
+		"type": "event"
+	}
+]);
+
+
+        // Set up the address of the contract with MyContract.at().
+        // The important thing to know is that MyContract.at() returns the instance.
+        var Votes = VotesContract.at('0x9ee1b809664701e344cfbc0a57a3fcbcd7ea2f97');
+        var votesEvent = Votes.VoteEvent();
+
+        // get candcount
+        // load each candidate 
+        // and create a row for each candidate
+        // set id to candidate votes column
+
+        
+        Votes.getOwner(function(error, result) {
+			if (!error) {
+				if(result.toString() === (web3.eth.accounts[0]).toString()){
+
+					Votes.getElectionTime((err, res) => {
+						if (!err) {
+			                   	
+			               	var d = new Date(res[0]);
+
+
+			               	var c = new Date();
+
+			               	var diff = (Math.floor(c.getTime() / 1000) - (d.getTime() / 1000));
+
+			               	var rem = (60 * res[1]) - diff;
+
+
+							if(rem > 0){
+								document.getElementById("adminLink").setAttribute('href', "#");
+								$("#admin").click(function() {
+			           				alert("Try after election is over.");
+
+			        			});
+							}else{
+								document.getElementById("adminLink").setAttribute('href', "admin.html");
+							}
+						}else
+					     	console.log(err);
+			        });
+
+
+				}else{
+					document.getElementById("adminLink").setAttribute('href', "#");
+					$("#admin").click(function() {
+			            alert("You are not the admin.");
+
+			        });
+				}
+			 } else{
+			 	console.log(error);
+			 }
+		});
+
+
+
+        
+
+        Votes.getElectionParameters((err, res) => {
+               if (!err) {
+                   
+               		document.getElementById("electName").textContent = res;
+
+               }else
+                console.log(err);
+            });
+
+
+        Votes.getElectionTime((err, res) => {
+               if (!err) {
+                   	
+               		var d = new Date(res[0]);
+               		document.getElementById("startat").innerHTML = d;
+
+
+               		var c = new Date();
+
+               		var diff = (Math.floor(c.getTime() / 1000) - (d.getTime() / 1000));
+
+               		var rem = (60 * res[1]) - diff;
+
+
+
+					var seconds = rem;
+
+				// Update the count down every 1 second
+					var x = setInterval(function() {
+
+				    
+					    // Find the distance between now an the count down date
+					    var distance = seconds;
+					    
+					    // Time calculations for days, hours, minutes and seconds
+					    var days = Math.floor(distance / (3600*24));
+					    distance  -= days*3600*24;
+					    var hrs   = Math.floor(distance / 3600);
+					    distance  -= hrs*3600;
+					    var mnts = Math.floor(distance / 60);
+					    distance  -= mnts*60;
+					    // Output the result in an element with id="demo"
+					    document.getElementById("time").innerHTML = days + "d " + hrs + "h "
+					    + mnts + "m " + distance + "s ";
+					    
+					    // If the count down is over, write some text 
+					    if (seconds < 0) {
+					        clearInterval(x);
+					        document.getElementById("time").innerHTML = "EXPIRED";
+					        window.location.href = "electionOver.html";
+					    }
+				    
+				   		seconds--;
+					}, 1000);
+
+
+               		
+
+               }else
+                console.log(err);
+            });
+        
+
+    	Votes.getCandCount(function(error, result) {
+           if (!error) {
+               
+
+       			for (i = 0; i < result; i++) {
+	   				Votes.getCandidate(i, (err, res) => {
+		           		if (!err) {
+		  
+		    				var table = document.getElementById("voterTable");
+		    				var row = table.insertRow(candcount);
+		    				var cell1 = row.insertCell(0);
+		    				var cell2 = row.insertCell(1);
+		    				var cell3 = row.insertCell(2);
+		    				var cell4 = row.insertCell(3);
+		    				
+		    				cell1.innerHTML = candcount;
+		    				cell2.innerHTML = res[0];
+		    				cell3.innerHTML = res[1];
+		    				cell4.innerHTML = res[2];
+
+		    				cell4.setAttribute("id", "cand"+candcount);
+
+
+
+
+		    				
+						    var select = document.getElementById('candidateSelector');
+
+				
+							var opt = document.createElement('option');
+							opt.value = res[0];
+							opt.innerHTML = res[0]+"("+res[1]+")";
+							select.appendChild(opt);
+				
+
+
+
+
+		    				candcount++;
+		           		} else
+		                	console.log(err);
+		        	});
+        	
+				}  
+
+
+           } else
+                console.log(error);
+        });
+					
+		
+    	
+
+    	votesEvent.watch(function(err, res){
+    		if(!err){
+    			location.reload();
+    		}else{
+    			console.log(err);
+    		}
+    	});
+
+		$("#votebtn").click(function() {
+            var cand = $("#candidateSelector").val();
+            Votes.vote(cand, (err, res) => {
+               if (err) {
+                   console.log(err);
+               }
+            });
+
+        });
+
+
+
+        $("#abstainbtn").click(function() {
+            Votes.abstain((err, res) => {
+               if (err) {
+                   console.log(err);
+               }
+            });
+
+        });
+    	
+
+        
+
+	</script>>
+
+
+</body>
+
+</html>
+

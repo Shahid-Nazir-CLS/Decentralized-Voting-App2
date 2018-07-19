@@ -1,0 +1,192 @@
+body {
+    background-image:url('election.jpg'); 
+    background-size: 100%;
+}
+
+#topBtns {
+    color: blue;
+    padding: 10px 0;
+    border: 3px solid green;
+    height: 30px;
+    opacity: 0.7;
+}
+
+#admin {
+	position: absolute; 
+	right: 30px;
+	width: 100px;
+	height: 30px;
+}
+
+#contact {
+	position: absolute; 
+	right: 250px;
+	width: 100px;
+	height: 30px;
+}
+
+#about {
+	position: absolute; 
+	right: 140px;
+	width: 100px;
+	height: 30px;
+}
+
+#home {
+	position: absolute; 
+	right: 470px;
+	width: 100px;
+	height: 30px;
+}
+
+#election {
+	position: absolute; 
+	right: 360px;
+	width: 100px;
+	height: 30px;
+}
+
+#appName {
+	text-align: center;
+	font-family: "Algerian";
+	font-size: 30px;
+}
+
+#adminsPage {
+	text-align: center;
+	text-align: center;
+	font-family: "Algerian";
+	font-size: 30px;
+}
+
+#electionForm {
+	position: absolute; 
+	right: 400px;
+	top: 300px;
+	width: 630px;
+	height: 400px;
+	font-family: "Verdana";
+	font-size: 20px;
+}
+
+.inputs {
+	position: absolute; 
+	right: 0px;
+	width: 340px;
+	height: 30px;
+	font-family: "Verdana";
+	font-size: 20px;
+}
+
+.bottomBtns {
+	width: 150px;
+	height: 35px;
+}
+
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+tr:nth-child(odd) {
+    background-color: #8b8b8b;
+}
+
+.bottomBtnsUser {
+	
+	width: 120px;
+	height: 40px;
+	margin: 10px
+
+}
+
+#UserpageBtns {
+	position: absolute; 
+	right: 600px;
+	bottom: 80px;
+}
+
+
+#timer {
+	font-family: "Verdana";
+	font-size: 14px;
+	margin: 10px;
+}
+
+#candidateSelector {
+	position: absolute;
+	width: 350px;
+	height: 40px;
+	bottom: 150px;
+	left: 630px;
+	font-family: "Verdana";
+	font-size: 20px;
+}
+
+#over {
+	font-family: "Verdana";
+	font-size: 30px;	
+	position: absolute;
+	left: 480px;
+	bottom: 100px;
+	color: red;
+}
+
+#noElection {
+	font-family: "Verdana";
+	font-size: 30px;	
+	position: absolute;
+	left: 680px;
+	top: 300px;
+	color: red;
+}
+
+
+.pics{
+	width: 200px;
+	height: 260px;
+}
+
+
+
+
+#shah{
+	position: absolute;
+	left:250px;
+	/*width: 200px;
+	height: 260px;*/
+}
+
+
+#mun{
+	position: absolute;
+	left:850px;
+}
+
+#zah{
+	position: absolute;
+	left:1450px;
+}
+
+.aboutText{
+	color: red;
+	font-weight :bold;
+}
+
+#contactTable{
+	position: absolute;
+	top: 350px;
+	left: 700px;
+}

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Votem</title>
+		<meta charset="utf-8"/>
+		<script src="./node_modules/web3/dist/web3.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+
+		<link rel="stylesheet" href="styles.css">
+
+	</head>
+<body>
+
+	<div id="topBtns">
+		<a href="admin.html" id="adminLink">
+  			<button id ="admin" type="button">ADMIN</button>
+  			 
+		</a> 
+		
+		<a href="index.html">
+			<button id="home" type="button">Home</button>
+		</a> 
+		
+		<a href="UserPage.html" id="elect">
+		<button id="election" type="button">Election</button>
+		</a> 
+
+		<a href="about.html">
+		<button id ="about" type="button">About us</button>
+		</a> 
+
+		<a href="contact.html">
+		<button id ="contact" type="button">Contact Us</button> 
+		</a> 
+
+	</div>
+
+
+	<div id="appName">
+  		<h1>Votem</h1>
+	</div>
+
+
+	<form action="//submit.form" id="ContactUs100" method="post" onsubmit="return ValidateForm(this);">
+		<script type="text/javascript">
+			function ValidateForm(frm) {
+			if (frm.Name.value == "") { alert('Name is required.'); frm.Name.focus(); return false; }
+			if (frm.PhoneNumber.value == "") { alert('PhoneNumber is required.'); frm.PhoneNumber.focus(); return false; }
+			if (frm.Subject.value == "") { alert('Subject is required.'); frm.Subject.focus(); return false; }
+			if (frm.Comments.value == "") { alert('Please enter comments or questions as mail body.'); frm.Comments.focus(); return false; }
+
+			var link = "mailto:shahiddroid@gmail.com"
+         	+ "?cc=tracyclash1@gmail.com"
+         	+ "&subject=" + escape(frm.Subject.value)
+         	+ "&body=" + escape("Name : "+frm.Name.value+"\nPhone Number : "+frm.PhoneNumber.value+"\n"+frm.Comments.value)
+     		;
+
+     		window.location.href = link;
+
+			return true; }
+		</script>
+		<table style="width:550px;border:0;" cellpadding="8" cellspacing="0" id="contactTable">
+			<tr> <td>
+			<label for="Name">Name*:</label>
+			</td> <td>
+			<input name="Name" type="text" maxlength="60" style="width:250px;" />
+			</td> </tr> <tr> <td>
+			<label for="PhoneNumber">Phone number:</label>
+			</td> <td>
+			<input name="PhoneNumber" type="text" maxlength="43" style="width:250px;" />
+			</td> </tr> <tr> <td>
+			<label for="Subject">Subject:</label>
+			</td> <td>
+			<input name="Subject" type="text" maxlength="90" style="width:250px;" />
+			</td> </tr> <tr> <td>
+			<label for="Comments">Email Body:</label>
+			</td> <td>
+			<textarea name="Comments" rows="7" cols="40" style="width:350px;"></textarea>
+			</td> </tr> <tr> <td>
+			
+			</td> <td>
+			<input name="skip_Submit" type="submit" value="Submit" id="sendmail"/>
+			
+
+			<!-- <script src="https://www.100forms.com/js/FORMKEY:8S4NNAR98FLU/SEND:shahiddroid@gmail.com" type="text/javascript"></script> -->
+			</td> </tr>
+		</table>
+	</form>
+
+
+
+	<script>
+		var candcount = 1;
+		// If web3 is not undefined, then we'll use that as our provider. 
+		// If it's undefined (else), we can manually specify the provider ourselves. 
+       if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+        }
+
+        // We have to specify a default ethereum account to use 
+        // through the web3.eth.defaultAccount method:
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+
+        //  Set up the contract ABI so the app knows what functions are available for this contract.
+        // This ABI allows you to call functions and receive data from your smart contract.
+        var VotesContract = web3.eth.contract([
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_candidateName",
+				"type": "string"
+			}
+		],
+		"name": "removeCandidate",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getCandCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_candidateName",
+				"type": "string"
+			},
+			{
+				"name": "_symbol",
+				"type": "string"
+			}
+		],
+		"name": "addCandidate",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_id",
+				"type": "uint256"
+			}
+		],
+		"name": "getCandidate",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "abstain",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "resetCandidates",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getOwner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getElectionTime",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			},
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getElectionParameters",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_electionStartTime",
+				"type": "string"
+			}
+		],
+		"name": "setElectionStartTime",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_electionName",
+				"type": "string"
+			},
+			{
+				"name": "_duration",
+				"type": "string"
+			}
+		],
+		"name": "setElectionParameters",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_cand",
+				"type": "string"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [],
+		"name": "VoteEvent",
+		"type": "event"
+	}
+]);
+
+
+        // Set up the address of the contract with MyContract.at().
+        // The important thing to know is that MyContract.at() returns the instance.
+        var Votes = VotesContract.at('0x9ee1b809664701e344cfbc0a57a3fcbcd7ea2f97');
+
+
+        Votes.getElectionTime(function(error, result) {
+           if (!error) {
+           		if(result[0].toString() === ""){
+           			document.getElementById("elect").setAttribute('href', "noElection.html");
+           		}else{
+           			console.log(error);
+           		}
+ 			} else{
+ 				console.log(error);
+ 			}
+        });  
+
+
+
+
+
+        Votes.getOwner(function(error, result) {
+			if (!error) {
+				if(result.toString() === (web3.eth.accounts[0]).toString()){
+
+					Votes.getElectionTime((err, res) => {
+						if (!err) {
+			                   	
+			               	var d = new Date(res[0]);
+
+
+			               	var c = new Date();
+
+			               	var diff = (Math.floor(c.getTime() / 1000) - (d.getTime() / 1000));
+
+			               	var rem = (60 * res[1]) - diff;
+
+
+							if(rem > 0){
+								document.getElementById("adminLink").setAttribute('href', "#");
+								$("#admin").click(function() {
+			           				alert("Try after election is over.");
+
+			        			});
+							}else{
+								document.getElementById("adminLink").setAttribute('href', "admin.html");
+							}
+						}else
+					     	console.log(err);
+			        });
+
+
+				}else{
+					document.getElementById("adminLink").setAttribute('href', "#");
+					$("#admin").click(function() {
+			            alert("You are not the admin.");
+
+			        });
+				}
+			 } else{
+			 	console.log(error);
+			 }
+		}); 
+
+       
+
+	</script>
+	
+
+</body>
+
+</html>
+
+
